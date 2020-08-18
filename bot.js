@@ -70,18 +70,17 @@ client.on('message', async message => {
                             etapa_value = metas[i].value;
                         }
                     }
-                    // console.log(response.data.meta_data);
+                    if (!etapa_id) {
+                        return message.reply('ocorreu um erro(1.1) ao se conectar com a Loja do Converte Fácil.');
+                    }
+
+                    if (!etapa_value) etapa_value = '0';
+
                 })
                 .catch((error) => {
                     console.log(error.response.data);
                     return message.reply('ocorreu um erro(1) ao se conectar com a Loja do Converte Fácil.');
                 });
-
-            // if(!etapa_id) {
-            //     return message.reply('ocorreu um erro(1.1) ao se conectar com a Loja do Converte Fácil.');
-            // }
-
-            if(!etapa_value) etapa_value = '0';
 
             const data = {
                 meta_data: [
