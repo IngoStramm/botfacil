@@ -27,12 +27,34 @@ client.on('message', async message => {
     let args = message.content.substring(prefix.length).split(' ');
 
     switch (args[0]) {
+        case 'etapa':
+            const embed = new Discord.MessageEmbed()
+                .setTitle('Etapas **EM ANDAMENTO**')
+                .addField(
+                    `Os números referem-se recpectivamente às seguintes etapas:`,
+                    `0 = Não Iniciado (Padrão)
+                    1 = Briefing
+                    2 = Sitemap
+                    3 = Página Inicial
+                    4 = Site Completo
+                    5 = Publicação CF
+                    6 = Treinamento
+                    7 = Suporte
+                    8 = Feedback
+                    9 = Etapas Concluídas`
+                )
+                .setColor(0x523f6d);
+            message.channel.send(embed);
+            message.channel.send(`>>> :exclamation: **Exemplo de como atualizar um pedido**
+        Para atualizar um pedido com o código "**154**" e com a etapa "**3**", use o comando: 
+        \`!pedido 154 3\``);
+            break;
         case 'pedido':
 
-        if (args.length < 2) {
-                return message.reply(`insira o **número do pedido** e o **número do status** a ser atualizado. Por exemplo: \`!pedido 0001 1\`.`);
+            if (args.length < 2) {
+                return message.reply(`insira o **número do pedido** e o **número da etapa** a ser atualizada. Por exemplo: \`!pedido 0001 1\`.`);
             } else if (args.length < 3) {
-                return message.reply(`é necessário inserir os dois valores: **número do pedido** e **número do status**. Por exemplo: \`!pedido 0001 1\`.`);
+                return message.reply(`é necessário inserir os dois valores: **número do pedido** e **número da etapa**. Por exemplo: \`!pedido 0001 1\`.`);
             }
 
             let etapa_id;
@@ -69,11 +91,11 @@ client.on('message', async message => {
                 .then((response) => {
                     console.log(`ID etapas: ${etapa_id}`);
                     console.log(response.data);
-                    message.reply(`status do **pedido #${args[1]}** atualizado de \`${etapa_value}\` para \`${args[2]}\`.`);
+                    message.reply(`etapa do **pedido #${args[1]}** alterada de \`${etapa_value}\` para \`${args[2]}\`.`);
                 })
                 .catch((error) => {
                     console.log(error.response.data);
-                    return message.reply('ocorreu um erro(3) ao atualizar o status do pedido da Loja do Converte Fácil.');
+                    return message.reply('ocorreu um erro(3) ao atualizar a etapa do pedido da Loja do Converte Fácil.');
                 });
             break;
     }
