@@ -11,8 +11,6 @@ const WooCommerce = new WooCommerceRestApi({
 });
 const prefix = '!';
 
-
-
 client.on('ready', () => {
     console.log('I am ready!');
 });
@@ -26,38 +24,39 @@ client.on('message', message => {
 client.on('message', async message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-    // const args = message.content.slice(prefix.length).trim().split(/ +/);
-    // const command = args.shift().toLowerCase();
     let args = message.content.substring(prefix.length).split(' ');
 
     switch (args[0]) {
-        case 'urban':
-            if (!args.length) {
-                return message.channel.send('You need to supply a search term!');
-            }
-
-            const query = querystring.stringify({ term: args.join(' ') });
-
-            const { list } = await fetch(`https://api.urbandictionary.com/v0/define?${query}`).then(response => response.json());
-
-            if (!list.length) {
-                return message.channel.send(`No results found for **${args.join(' ')}**.`);
-            }
-
-            message.channel.send(list[0].definition);
+        case 'etapa':
+            const embed = new Discord.MessageEmbed()
+                .setTitle('Etapas **EM ANDAMENTO**')
+                .addField(
+                    `Os números referem-se recpectivamente às seguintes etapas:`,
+                    `0 = Não Iniciado (Padrão)
+                    1 = Briefing
+                    2 = Sitemap
+                    3 = Página Inicial
+                    4 = Site Completo
+                    5 = Publicação CF
+                    6 = Treinamento
+                    7 = Suporte
+                    8 = Feedback
+                    9 = Etapas Concluídas`
+                )
+                .setColor(0x523f6d);
+            message.channel.send(embed);
+            message.channel.send(`>>> :exclamation: **Exemplo de como atualizar um pedido**
+        Para atualizar um pedido com o código "**154**" e com a etapa "**3**", use o comando: 
+        \`!pedido 154 3\``);
             break;
         case 'pedido':
-            // console.log(args.length);
 
             if (args.length < 2) {
-                return message.reply(`insira o **número do pedido** e o **número do status** a ser atualizado. Por exemplo: \`!pedido 0001 1\`.`);
+                return message.reply(`insira o **número do pedido** e o **número da etapa** a ser atualizada. Por exemplo: \`!pedido 0001 1\`.`);
             } else if (args.length < 3) {
-                return message.reply(`é necessário inserir os dois valores: **número do pedido** e **número do status**. Por exemplo: \`!pedido 0001 1\`.`);
+                return message.reply(`é necessário inserir os dois valores: **número do pedido** e **número da etapa**. Por exemplo: \`!pedido 0001 1\`.`);
             }
 
-            // for (i = 0; i < args.length; i++) {
-            //     console.log(args[i]);
-            // }
             let etapa_id;
             let etapa_value;
 
@@ -70,17 +69,21 @@ client.on('message', async message => {
                             etapa_value = metas[i].value;
                         }
                     }
-                    // console.log(response.data.meta_data);
+                    if (!etapa_id) {
+                        return message.reply('ocorreu um erro(1) ao se conectar com a Loja do Converte Fácil.');
+                    }
+
+                    if (!etapa_value) etapa_value = '0';
+
                 })
                 .catch((error) => {
                     console.log(error.response.data);
-                    return message.reply('ocorreu um erro(1) ao se conectar com a Loja do Converte Fácil.');
+                    return message.reply('ocorreu um erro(2) ao se conectar com a Loja do Converte Fácil.');
                 });
 
             const data = {
                 meta_data: [
                     { id: etapa_id, key: 'etapa_em_andamento', value: `${args[2]}` }
-                    // { etapa_em_andamento: `${args[2]}` }
                 ]
             };
 
@@ -88,16 +91,15 @@ client.on('message', async message => {
                 .then((response) => {
                     console.log(`ID etapas: ${etapa_id}`);
                     console.log(response.data);
-                    message.reply(`status do **pedido #${args[1]}** atualizado de \`${etapa_value}\` para \`${args[2]}\`.`);
+                    message.reply(`etapa do **pedido #${args[1]}** alterada de \`${etapa_value}\` para \`${args[2]}\`.`);
                 })
                 .catch((error) => {
                     console.log(error.response.data);
-                    return message.reply('ocorreu um erro(2) ao atualizar o status do pedido da Loja do Converte Fácil.');
+                    return message.reply('ocorreu um erro(3) ao atualizar a etapa do pedido da Loja do Converte Fácil.');
                 });
             break;
     }
 
 });
 
-// THIS  MUST  BE  THIS  WAY
-client.login(process.env.BOT_TOKEN);//BOT_TOKEN is the Client Secret
+client.login(process.env.BOT_TOKEN);
