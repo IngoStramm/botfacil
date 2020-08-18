@@ -28,9 +28,8 @@ client.on('message', async message => {
 
     switch (args[0]) {
         case 'pedido':
-            // console.log(args.length);
 
-            if (args.length < 2) {
+        if (args.length < 2) {
                 return message.reply(`insira o **número do pedido** e o **número do status** a ser atualizado. Por exemplo: \`!pedido 0001 1\`.`);
             } else if (args.length < 3) {
                 return message.reply(`é necessário inserir os dois valores: **número do pedido** e **número do status**. Por exemplo: \`!pedido 0001 1\`.`);
@@ -63,7 +62,6 @@ client.on('message', async message => {
             const data = {
                 meta_data: [
                     { id: etapa_id, key: 'etapa_em_andamento', value: `${args[2]}` }
-                    // { etapa_em_andamento: `${args[2]}` }
                 ]
             };
 
@@ -82,5 +80,4 @@ client.on('message', async message => {
 
 });
 
-// THIS  MUST  BE  THIS  WAY
-client.login(process.env.BOT_TOKEN);//BOT_TOKEN is the Client Secret
+client.login(process.env.BOT_TOKEN);
