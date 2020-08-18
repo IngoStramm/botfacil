@@ -24,26 +24,9 @@ client.on('message', message => {
 client.on('message', async message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-    // const args = message.content.slice(prefix.length).trim().split(/ +/);
-    // const command = args.shift().toLowerCase();
     let args = message.content.substring(prefix.length).split(' ');
 
     switch (args[0]) {
-        case 'urban':
-            if (!args.length) {
-                return message.channel.send('You need to supply a search term!');
-            }
-
-            const query = querystring.stringify({ term: args.join(' ') });
-
-            const { list } = await fetch(`https://api.urbandictionary.com/v0/define?${query}`).then(response => response.json());
-
-            if (!list.length) {
-                return message.channel.send(`No results found for **${args.join(' ')}**.`);
-            }
-
-            message.channel.send(list[0].definition);
-            break;
         case 'pedido':
             // console.log(args.length);
 
@@ -66,7 +49,7 @@ client.on('message', async message => {
                         }
                     }
                     if (!etapa_id) {
-                        return message.reply('ocorreu um erro(1.1) ao se conectar com a Loja do Converte Fácil.');
+                        return message.reply('ocorreu um erro(1) ao se conectar com a Loja do Converte Fácil.');
                     }
 
                     if (!etapa_value) etapa_value = '0';
@@ -74,7 +57,7 @@ client.on('message', async message => {
                 })
                 .catch((error) => {
                     console.log(error.response.data);
-                    return message.reply('ocorreu um erro(1) ao se conectar com a Loja do Converte Fácil.');
+                    return message.reply('ocorreu um erro(2) ao se conectar com a Loja do Converte Fácil.');
                 });
 
             const data = {
@@ -92,7 +75,7 @@ client.on('message', async message => {
                 })
                 .catch((error) => {
                     console.log(error.response.data);
-                    return message.reply('ocorreu um erro(2) ao atualizar o status do pedido da Loja do Converte Fácil.');
+                    return message.reply('ocorreu um erro(3) ao atualizar o status do pedido da Loja do Converte Fácil.');
                 });
             break;
     }
