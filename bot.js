@@ -4,14 +4,12 @@ const fetch = require('node-fetch');
 const querystring = require('querystring');
 const WooCommerceRestApi = require("@woocommerce/woocommerce-rest-api").default;
 const WooCommerce = new WooCommerceRestApi({
-    url: 'https://convertefacil.com.br', // Your store URL
-    consumerKey: 'ck_3b7e6ae8f899f6c87e1e32c76a1268c660686f90', // Your consumer key
-    consumerSecret: 'cs_8e879c2c4f70fccc11c42f65e386273f99af48ee', // Your consumer secret
+    url: process.env.WC_URL, // Your store URL
+    consumerKey: process.env.WC_CONSUMER_KEY, // Your consumer key
+    consumerSecret: process.env.WC_CONSUMER_SECRET, // Your consumer secret
     version: 'wc/v3' // WooCommerce WP REST API version
 });
 const prefix = '!';
-
-
 
 client.on('ready', () => {
     console.log('I am ready!');
@@ -55,9 +53,6 @@ client.on('message', async message => {
                 return message.reply(`é necessário inserir os dois valores: **número do pedido** e **número do status**. Por exemplo: \`!pedido 0001 1\`.`);
             }
 
-            // for (i = 0; i < args.length; i++) {
-            //     console.log(args[i]);
-            // }
             let etapa_id;
             let etapa_value;
 
