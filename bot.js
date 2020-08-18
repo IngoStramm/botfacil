@@ -77,9 +77,9 @@ client.on('message', async message => {
                     return message.reply('ocorreu um erro(1) ao se conectar com a Loja do Converte Fácil.');
                 });
 
-            if(!etapa_id) {
-                return message.reply('ocorreu um erro(1.1) ao se conectar com a Loja do Converte Fácil.');
-            }
+            // if(!etapa_id) {
+            //     return message.reply('ocorreu um erro(1.1) ao se conectar com a Loja do Converte Fácil.');
+            // }
 
             if(!etapa_value) etapa_value = '0';
 
