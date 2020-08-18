@@ -42,4 +42,5 @@ client.on('message', async message => {
 });
 
 // THIS  MUST  BE  THIS  WAY
-client.login(process.env.BOT_TOKEN);//BOT_TOKEN is the Client Secret
+client.login('NzQ0OTY3ODg4NjQ5MzIyNTY4.Xzq7aQ.ipOS2T4bW4LhTt9I3VB0Oqr3XWc');//BOT_TOKEN is the Client Secret
+// client.login(process.env.BOT_TOKEN);//BOT_TOKEN is the Client Secret
