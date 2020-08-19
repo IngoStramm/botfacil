@@ -44,6 +44,7 @@ client.on('message', async message => {
     switch (args[0]) {
 
         case 'etapa':
+        case 'etapas':
 
             const embed = new Discord.MessageEmbed()
                 .setTitle('Etapas **EM ANDAMENTO**')
@@ -64,17 +65,17 @@ client.on('message', async message => {
             message.channel.send(embed);
             message.channel.send(`>>> :exclamation: **Exemplo de como atualizar um pedido**
         Para atualizar um pedido com o código "**154**" e com a etapa "**3**", use o comando: 
-        \`!pedido 154 3\``);
+        \`!atualizar 154 3\``);
             break;
 
-        case 'pedido':
+        case 'atualizar':
 
             if (channel_name !== 'atualizar-projetos') return;
 
             if (args.length < 2) {
-                return message.reply(`insira o **número do pedido** e o **número da etapa** a ser atualizada. Por exemplo: \`!pedido 0001 1\`.`);
+                return message.reply(`insira o **número do pedido** e o **número da etapa** a ser atualizada. Por exemplo: \`!atualizar 0001 1\`.`);
             } else if (args.length < 3) {
-                return message.reply(`é necessário inserir os dois valores: **número do pedido** e **número da etapa**. Por exemplo: \`!pedido 0001 1\`.`);
+                return message.reply(`é necessário inserir os dois valores: **número do pedido** e **número da etapa**. Por exemplo: \`!atualizar 0001 1\`.`);
             }
 
             let etapa_id;
