@@ -220,7 +220,7 @@ client.on('message', async message => {
                                     } else {
                                         server.channels.create(new_channel_name)
                                             .then(channel => {
-                                                let category = server.channels.cache.find(c => c.name == "Projetos CF" && c.type == "category");
+                                                let category = server.channels.cache.find(c => c.name == "📒 PROJETOS CF" && c.type == "category");
 
                                                 if (!category) throw new Error("Category channel does not exist");
                                                 channel.setParent(category.id);
