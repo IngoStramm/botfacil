@@ -1,8 +1,10 @@
 const Discord = require('discord.js');
-const client = new Discord.Client();
 const fetch = require('node-fetch');
-const querystring = require('querystring');
+const fs = require('fs');
+var slugify = require('slugify');
 const WooCommerceRestApi = require("@woocommerce/woocommerce-rest-api").default;
+const client = new Discord.Client();
+client.order = require('./wc-order.json');
 const WooCommerce = new WooCommerceRestApi({
     url: 'https://convertefacil.com.br', // Your store URL
     consumerKey: 'ck_3b7e6ae8f899f6c87e1e32c76a1268c660686f90', // Your consumer key
@@ -11,23 +13,38 @@ const WooCommerce = new WooCommerceRestApi({
 });
 const prefix = '!';
 
+let orders_loop;
+let orders_loop_status = 'não iniciado';
+let num_loop = 0;
+
 client.on('ready', () => {
+
     console.log('I am ready!');
+    const verifica_wc_orders = setInterval(() => {
+
+    }, 5000);
+
 });
 
 client.on('message', message => {
+
     if (message.content === 'ping') {
         message.reply('pong');
     }
+
 });
 
 client.on('message', async message => {
+
     if (!message.content.startsWith(prefix) || message.author.bot) return;
 
     let args = message.content.substring(prefix.length).split(' ');
+    let channel_name = message.channel.name;
 
     switch (args[0]) {
+
         case 'etapa':
+
             const embed = new Discord.MessageEmbed()
                 .setTitle('Etapas **EM ANDAMENTO**')
                 .addField(
@@ -49,7 +66,10 @@ client.on('message', async message => {
         Para atualizar um pedido com o código "**154**" e com a etapa "**3**", use o comando: 
         \`!pedido 154 3\``);
             break;
+
         case 'pedido':
+
+            if (channel_name !== 'atualizar-projetos') return;
 
             if (args.length < 2) {
                 return message.reply(`insira o **número do pedido** e o **número da etapa** a ser atualizada. Por exemplo: \`!pedido 0001 1\`.`);
@@ -97,6 +117,105 @@ client.on('message', async message => {
                     console.log(error.response.data);
                     return message.reply('ocorreu um erro(3) ao atualizar a etapa do pedido da Loja do Converte Fácil.');
                 });
+            break;
+
+        case 'vigiar':
+
+            const str_vigiar_opcoes = `As opções disponíveis, são: \`!vigiar start\`, para **iniciar**, \`!vigiar end\`, para **finalizar**, e \`!vigiar status\`, para **verificar o status atual** do comando.`;
+
+            if (args.length < 2) {
+                return message.reply(`o comando \`!vigiar\` necessita de um **segundo atributo**. ${str_vigiar_opcoes}`);
+            }
+
+            const channel_novos_pedidos = client.channels.cache.find(channel => channel.name === 'novos-pedidos');
+
+            if (args[1] === 'status') {
+
+                return message.channel.send(`O status atual do comando \`!vigiar\` é "**${orders_loop_status}**".`);
+
+            } else if (args[1] === 'end') {
+
+                clearInterval(orders_loop);
+                orders_loop_status = 'pausado';
+                console.log('Total de loops executados: ' + num_loop);
+                return message.reply('*Bot Fácil* **parou** de vigiar os pedidos do Converte Fácil.');
+
+            } else if (args[1] === 'start') {
+
+                message.reply('*Bot Fácil* **começou** a vigiar os pedidos do Converte Fácil.');
+
+                orders_loop_status = 'executando';
+
+                orders_loop = setInterval(() => {
+
+                    console.log('loop #' + num_loop);
+
+                    WooCommerce.get("orders")
+                        .then((response) => {
+
+                            let wc_last_order_id = response.data[0].id;
+
+                            if (!client.order['last_order'] || parseInt(wc_last_order_id) > parseInt(client.order['last_order'].id)) {
+
+                                console.log('wc_last_order_id: ' + wc_last_order_id);
+
+                                client.order['last_order'] = {
+                                    id: wc_last_order_id,
+                                    date: response.data[0].date_created,
+                                    cliente: `${response.data[0].billing.first_name} ${response.data[0].billing.last_name}`
+                                }
+
+                                console.log(`parseInt(client.order['last_order'].id: ${parseInt(client.order['last_order'].id)}`);
+
+                                fs.writeFile('./wc-order.json', JSON.stringify(client.order, null, 4), err => {
+
+                                    if (err) throw err;
+
+                                    let last_order_id = client.order['last_order'].id;
+                                    let last_order_cliente = client.order['last_order'].cliente;
+
+                                    channel_novos_pedidos
+                                        .send('Compra realizada no site  :partying_face: \n>>> Cliente: `' + last_order_cliente + '`\nCódigo Compra: `' + last_order_id + '`');
+
+                                    let server = message.guild;
+                                    let new_channel_name = slugify(last_order_cliente + ' ' + last_order_id, {
+                                        replacement: '-', remove: '/[*+~.()\'"!:@àáäâèéëêìíïîòóöôùúüûñç·/_,:;]/g', lower: true, strict: true, locale: 'en'
+                                    });
+
+                                    console.log(`Nome slugficiado: ${new_channel_name}`);
+
+                                    let atendimentoCF = server.roles.cache.find(role => role.name === "AtendimentoCF");
+                                    const msg_atendimento = 'Olá <@&' + atendimentoCF.id + '>\nEntrar em contato em até 3 horas úteis para:\n>>> se apresentar ao cliente;\nagendar coleta de briefing;\nreforçar pedido de preenchimento do pré-briefing e envio de materiais.';
+
+                                    if (channel_cliente = client.channels.cache.find(channel => channel.name === new_channel_name)) {
+                                        return channel_cliente.send(msg_atendimento);
+                                    } else {
+                                        server.channels.create(new_channel_name)
+                                            .then(channel => {
+                                                let category = server.channels.cache.find(c => c.name == "Projetos CF" && c.type == "category");
+
+                                                if (!category) throw new Error("Category channel does not exist");
+                                                channel.setParent(category.id);
+
+
+                                                return channel
+                                                    .send(msg_atendimento);
+                                            })
+                                            .catch(console.error);
+                                    }
+
+                                });
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+
+                    num_loop++;
+
+                }, 10000);
+
+            }
             break;
     }
 
