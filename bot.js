@@ -26,14 +26,6 @@ client.on('ready', () => {
 
 });
 
-client.on('message', message => {
-
-    if (message.content === 'ping') {
-        message.reply('pong');
-    }
-
-});
-
 client.on('message', async message => {
 
     if (!message.content.startsWith(prefix) || message.author.bot) return;
@@ -42,6 +34,32 @@ client.on('message', async message => {
     let channel_name = message.channel.name;
 
     switch (args[0]) {
+
+        case 'help':
+        case 'h':
+        case 'comando':
+        case 'comandos':
+        case 'command':
+        case 'commands':
+        case 'c':
+            const channel_atualizar_pedidos = message.guild.channels.find(channel => channel.name === 'atualizar-pedidos');
+            const embed = new Discord.MessageEmbed()
+                .setTitle('Comandos disponíveis')
+                .addField(
+                    `\`!help\`, \`!h\`, \`!comando\`, \`!comandos\`, \`!command\`, \`!commands\` ou \`!c\``,
+                    `Exibe as opções do **Bot Fácil**`
+                )
+                .addField(
+                    `\`!etapa\` ou \`etapas\``,
+                    `Exibe a lista com os números das etapas dos pedidos. Usado para atualizar os pedidos através do comando \`!aztualizar\``
+                )
+                .addField(
+                    `\`!atualizar\``,
+                    `Atualiza a etapa de um pedido. Este comando necessita de dois valores adicionais: o *número do pedido* e o *número da etapa*. Digite \`!etapa\` para mais informações. **Importante**: este comando só funciona no canal <#${channel_atualizar_pedidos.id}>`
+                )
+                    .setColor(0x523f6d);
+            message.channel.send(embed);
+            break;
 
         case 'etapa':
         case 'etapas':
@@ -65,12 +83,13 @@ client.on('message', async message => {
             message.channel.send(embed);
             message.channel.send(`>>> :exclamation: **Exemplo de como atualizar um pedido**
         Para atualizar um pedido com o código "**154**" e com a etapa "**3**", use o comando: 
-        \`!atualizar 154 3\``);
+        \`!atualizar 154 3\`
+        **Importante**: este comando só funciona no canal <#${channel_atualizar_pedidos.id}>`);
             break;
 
         case 'atualizar':
 
-            if (channel_name !== 'atualizar-projetos') return;
+            if (channel_name !== 'atualizar-projetos') return message.reply(`**Importante**: este comando só funciona no canal <#${channel_atualizar_pedidos.id}>`);
 
             if (args.length < 2) {
                 return message.reply(`insira o **número do pedido** e o **número da etapa** a ser atualizada. Por exemplo: \`!atualizar 0001 1\`.`);
