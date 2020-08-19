@@ -35,31 +35,31 @@ client.on('message', async message => {
 
     switch (args[0]) {
 
-        case 'help':
-        case 'h':
-        case 'comando':
-        case 'comandos':
-        case 'command':
-        case 'commands':
-        case 'c':
-            const channel_atualizar_pedidos = message.guild.channels.cache.find(channel => channel.name === 'atualizar-pedidos');
-            const embedCommands = new Discord.MessageEmbed()
-                .setTitle('Comandos disponíveis')
-                .addField(
-                    `\`!help\`, \`!h\`, \`!comando\`, \`!comandos\`, \`!command\`, \`!commands\` ou \`!c\``,
-                    `Exibe as opções do **Bot Fácil**`
-                )
-                .addField(
-                    `\`!etapa\` ou \`etapas\``,
-                    `Exibe a lista com os números das etapas dos pedidos. Usado para atualizar os pedidos através do comando \`!aztualizar\``
-                )
-                .addField(
-                    `\`!atualizar\``,
-                    `Atualiza a etapa de um pedido. Este comando necessita de dois valores adicionais: o *número do pedido* e o *número da etapa*. Digite \`!etapa\` para mais informações. **Importante**: este comando só funciona no canal <#${channel_atualizar_pedidos.id}>`
-                )
-                    .setColor(0x523f6d);
-            message.channel.send(embedCommands);
-            break;
+        // case 'help':
+        // case 'h':
+        // case 'comando':
+        // case 'comandos':
+        // case 'command':
+        // case 'commands':
+        // case 'c':
+        //     const channel_atualizar_pedidos = message.guild.channels.cache.find(channel => channel.name === 'atualizar-pedidos');
+        //     const embedCommands = new Discord.MessageEmbed()
+        //         .setTitle('Comandos disponíveis')
+        //         .addField(
+        //             `\`!help\`, \`!h\`, \`!comando\`, \`!comandos\`, \`!command\`, \`!commands\` ou \`!c\``,
+        //             `Exibe as opções do **Bot Fácil**`
+        //         )
+        //         .addField(
+        //             `\`!etapa\` ou \`etapas\``,
+        //             `Exibe a lista com os números das etapas dos pedidos. Usado para atualizar os pedidos através do comando \`!aztualizar\``
+        //         )
+        //         .addField(
+        //             `\`!atualizar\``,
+        //             `Atualiza a etapa de um pedido. Este comando necessita de dois valores adicionais: o *número do pedido* e o *número da etapa*. Digite \`!etapa\` para mais informações. **Importante**: este comando só funciona no canal <#${channel_atualizar_pedidos.id}>`
+        //         )
+        //             .setColor(0x523f6d);
+        //     message.channel.send(embedCommands);
+        //     break;
 
         case 'etapa':
         case 'etapas':
