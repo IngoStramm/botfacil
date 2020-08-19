@@ -30,36 +30,41 @@ client.on('message', async message => {
 
     if (!message.content.startsWith(prefix) || message.author.bot) return;
 
+    const channel_atualizar_projetos = message.guild.channels.cache.find(channel => channel.name === 'atualizar-projetos');
+
     let args = message.content.substring(prefix.length).split(' ');
     let channel_name = message.channel.name;
 
     switch (args[0]) {
 
-        // case 'help':
-        // case 'h':
-        // case 'comando':
-        // case 'comandos':
-        // case 'command':
-        // case 'commands':
-        // case 'c':
-        //     const channel_atualizar_pedidos = message.guild.channels.cache.find(channel => channel.name === 'atualizar-pedidos');
-        //     const embedCommands = new Discord.MessageEmbed()
-        //         .setTitle('Comandos disponíveis')
-        //         .addField(
-        //             `\`!help\`, \`!h\`, \`!comando\`, \`!comandos\`, \`!command\`, \`!commands\` ou \`!c\``,
-        //             `Exibe as opções do **Bot Fácil**`
-        //         )
-        //         .addField(
-        //             `\`!etapa\` ou \`etapas\``,
-        //             `Exibe a lista com os números das etapas dos pedidos. Usado para atualizar os pedidos através do comando \`!aztualizar\``
-        //         )
-        //         .addField(
-        //             `\`!atualizar\``,
-        //             `Atualiza a etapa de um pedido. Este comando necessita de dois valores adicionais: o *número do pedido* e o *número da etapa*. Digite \`!etapa\` para mais informações. **Importante**: este comando só funciona no canal <#${channel_atualizar_pedidos.id}>`
-        //         )
-        //             .setColor(0x523f6d);
-        //     message.channel.send(embedCommands);
-        //     break;
+        case 'help':
+        case 'h':
+        case 'comando':
+        case 'comandos':
+        case 'command':
+        case 'commands':
+        case 'c':
+            const embedCommands = new Discord.MessageEmbed()
+                .setTitle('Comandos disponíveis')
+                .addField(
+                    `\`!help\`, \`!h\`, \`!comando\`, \`!comandos\`, \`!command\`, \`!commands\` ou \`!c\``,
+                    `Exibe as opções do **Bot Fácil**`
+                )
+                .addField(
+                    `\`!etapa\` ou \`etapas\``,
+                    `Exibe a lista com os números das etapas dos pedidos. Usado para atualizar os pedidos através do comando \`!aztualizar\``
+                )
+                .addField(
+                    `\`!atualizar\``,
+                    `Atualiza a etapa de um pedido. Este comando necessita de dois valores adicionais: o *número do pedido* e o *número da etapa*. Digite \`!etapa\` para mais informações. \n**Importante**: este comando só funciona no canal <#${channel_atualizar_projetos.id}>`
+                )
+                .addField(
+                    `\`!vigiar\``,
+                    `Comando para iniciar e pausar o processo de vigiar os pedidos do site do *Converte Fácil*. Este comando necessita de um valor adicional. \nEstas são as opções: \`!vigiar start\`, para **iniciar**, \`!vigiar end\`, para **finalizar**, e \`!vigiar status\`, para **verificar o status atual** do comando. \n **Atenção**: este comando só está disponível para usuários com privilégios de *administrador*`
+                )
+                .setColor(0x523f6d);
+            message.channel.send(embedCommands);
+            break;
 
         case 'etapa':
         case 'etapas':
@@ -84,17 +89,17 @@ client.on('message', async message => {
             message.channel.send(`>>> :exclamation: **Exemplo de como atualizar um pedido**
         Para atualizar um pedido com o código "**154**" e com a etapa "**3**", use o comando: 
         \`!atualizar 154 3\`
-        **Importante**: este comando só funciona no canal <#${channel_atualizar_pedidos.id}>`);
+        **Importante**: este comando só funciona no canal <#${channel_atualizar_projetos.id}>`);
             break;
 
         case 'atualizar':
 
-            if (channel_name !== 'atualizar-projetos') return message.reply(`**Importante**: este comando só funciona no canal <#${channel_atualizar_pedidos.id}>`);
+            if (channel_name !== 'atualizar-projetos') return message.reply(`este comando só funciona no canal <#${channel_atualizar_projetos.id}>`);
 
             if (args.length < 2) {
-                return message.reply(`insira o **número do pedido** e o **número da etapa** a ser atualizada. Por exemplo: \`!atualizar 0001 1\`.`);
+                return message.reply(`insira o **número do pedido** e o **número da etapa** a ser atualizada. Por exemplo: \`!atualizar 0001 1\`. Utilize o comando \`!etapa\` para consultar os números das etapas.`);
             } else if (args.length < 3) {
-                return message.reply(`é necessário inserir os dois valores: **número do pedido** e **número da etapa**. Por exemplo: \`!atualizar 0001 1\`.`);
+                return message.reply(`é necessário inserir os dois valores: **número do pedido** e **número da etapa**. Por exemplo: \`!atualizar 0001 1\`. Utilize o comando \`!etapa\` para consultar os números das etapas.`);
             }
 
             let etapa_id;
@@ -140,6 +145,9 @@ client.on('message', async message => {
             break;
 
         case 'vigiar':
+
+            if (!message.member.hasPermission("Administrator")) return message.reply('Apenas usuários com privilégio de "*Administrador*" podem utilizar este recurso.');
+
 
             const str_vigiar_opcoes = `As opções disponíveis, são: \`!vigiar start\`, para **iniciar**, \`!vigiar end\`, para **finalizar**, e \`!vigiar status\`, para **verificar o status atual** do comando.`;
 
@@ -233,7 +241,7 @@ client.on('message', async message => {
 
                     num_loop++;
 
-                }, 10000);
+                }, 300000);
 
             }
             break;
