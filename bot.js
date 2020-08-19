@@ -43,7 +43,7 @@ client.on('message', async message => {
         case 'commands':
         case 'c':
             const channel_atualizar_pedidos = message.guild.channels.find(channel => channel.name === 'atualizar-pedidos');
-            const embed = new Discord.MessageEmbed()
+            const embedCommands = new Discord.MessageEmbed()
                 .setTitle('Comandos disponíveis')
                 .addField(
                     `\`!help\`, \`!h\`, \`!comando\`, \`!comandos\`, \`!command\`, \`!commands\` ou \`!c\``,
@@ -58,7 +58,7 @@ client.on('message', async message => {
                     `Atualiza a etapa de um pedido. Este comando necessita de dois valores adicionais: o *número do pedido* e o *número da etapa*. Digite \`!etapa\` para mais informações. **Importante**: este comando só funciona no canal <#${channel_atualizar_pedidos.id}>`
                 )
                     .setColor(0x523f6d);
-            message.channel.send(embed);
+            message.channel.send(embedCommands);
             break;
 
         case 'etapa':
