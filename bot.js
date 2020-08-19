@@ -42,7 +42,7 @@ client.on('message', async message => {
         case 'command':
         case 'commands':
         case 'c':
-            const channel_atualizar_pedidos = message.guild.channels.find(channel => channel.name === 'atualizar-pedidos');
+            const channel_atualizar_pedidos = message.guild.channels.cache.find(channel => channel.name === 'atualizar-pedidos');
             const embedCommands = new Discord.MessageEmbed()
                 .setTitle('Comandos disponíveis')
                 .addField(
