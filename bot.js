@@ -22,7 +22,7 @@ client.on('ready', () => {
     console.log('I am ready!');
     const verifica_wc_orders = setInterval(() => {
 
-    }, 5000);
+    }, 15000);
 
 });
 
